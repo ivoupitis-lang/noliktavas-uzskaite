@@ -31,8 +31,11 @@
       <p class="note">Vispirms noskenē vai ievadi plaukta adresi, pēc tam preces svītrkodu. Atkārtoti skenējot to pašu preci, daudzums summējas. Saraksts kārtojas pēc plaukta adreses (piemēram, A-2 pirms A-10).</p>
       <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
       <h2>📁 Dati</h2>
- $('importBtn').addEventListener('click',()=>$('fileInput').click());
- $('fileInput').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const txt=(await f.text()).replace(/^\\uFEFF/,');const rows=txt.split(/\\r?\\n/).filter(Boolean).map(line=>line.split(/;(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v=>v.replace(/^"|"$/g,').replace(/""/g,'"')));const header=rows[0]||[];const modern=/plaukta|adrese/i.test(header[0]||');const headered=modern||/svītrkods|barcode/i.test(header[0]||');let added=0;for(const r of rows.slice(headered?1:0)){if(!r.length)continue;const location=modern?r[0]:';const [barcode,name,quantity,unit,createdAt]=modern?r.slice(1):r;const n=Number(String(quantity||').replace(',','.'));if(!barcode&&!name||!(n>0))continue;const old=items.find(x=>barcode&&x.barcode===barcode);if(old){old.quantity=n;old.name=name||old.name;old.unit=unit||old.unit;old.location=location||old.location}else{items.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),barcode,location,name:name||'Prece '+barcode,quantity:n,unit:unit||'gab.',createdAt:createdAt||new Date().toISOString()});added++}}save();render();toast('Importētas '+added+' jaunas preces')}catch(err){toast('Neizdevās nolasīt CSV failu')}e.target.value='});
+      <div class="tools">
+        <button class="btn secondary" type="button" id="exportBtn">⬇ Eksportēt CSV</button>
+        <button class="btn secondary" type="button" id="importBtn">⬆ Importēt CSV</button>
+        <input id="fileInput" type="file" accept=".csv,text/csv" hidden>
+      </div>
       <p class="note">Preces tiek saglabātas šajā ierīcē. CSV failu vari atvērt Excel vai pārsūtīt kolēģim.</p>
     </section>
     <section class="panel">
@@ -85,5 +88,6 @@
 </script>
 </body>
 </html>
+
 
 
