@@ -1,4 +1,4 @@
-const CACHE_NAME = 'noliktavas-pwa-v1';
+const CACHE_NAME = 'noliktavas-pwa-v2';
 const APP_FILES = [
   './',
   './index.html',
@@ -31,4 +31,5 @@ self.addEventListener('fetch', event => {
     return response;
   }).catch(() => caches.match('./index.html'))));
 });
+
 

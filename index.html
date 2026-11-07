@@ -44,7 +44,7 @@
   <p class="privacy">Darbojas lokāli šajā pārlūkā. Ja izdzēsīsi pārlūka datus, eksportē CSV rezerves kopijai.</p>
 </main>
 <div class="toast" id="toast"></div>
-<script src="https://unpkg.com/@zxing/browser@0.2.1/umd/zxing-browser.min.js" defer></script>
+<script src="https://unpkg.com/@zxing/browser@0.2.1" defer></script>
 <script>
 (()=>{
  const KEY='noliktavas-uzskaite-v1'; let items=[]; let stream=null; let detector=null; let zxingReader=null; let zxingControls=null; let toastTimer;
@@ -62,7 +62,22 @@
  $('importBtn').addEventListener('click',()=>$('fileInput').click()); $('fileInput').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const txt=(await f.text()).replace(/^\uFEFF/,'');const rows=txt.split(/\r?\n/).filter(Boolean).map(line=>{const sep=line.includes(';')?';':',';const re=new RegExp('(?:^|'+sep+')(?:"((?:[^"]|"")*)"|([^'+sep+']*))','g');const out=[];let m;while((m=re.exec(line))!==null)out.push((m[1]??m[2]??'').replace(/""/g,'"'));return out});const start=/svītrkods|barcode/i.test(rows[0]?.[0]||'')?1:0;let added=0;for(const r of rows.slice(start)){if(!r.length)continue;const [barcode,name,quantity,unit,createdAt]=r;const n=Number(String(quantity||'').replace(',','.'));if(!barcode&&!name||!(n>0))continue;const old=items.find(x=>barcode&&x.barcode===barcode);if(old){old.quantity=n;old.name=name||old.name;old.unit=unit||old.unit}else{items.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),barcode,name:name||'Prece '+barcode,quantity:n,unit:unit||'gab.',createdAt:createdAt||new Date().toISOString()});added++}}save();render();toast('Importētas '+added+' jaunas preces')}catch(err){toast('Neizdevās nolasīt CSV failu')}e.target.value=''});
  async function stopCamera(){if(zxingControls){zxingControls.stop();zxingControls=null}if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('camera').srcObject=null;$('camera').style.display='none';$('cameraBtn').textContent='📷 Skenēt'}
  function onCodeRead(value){if(!value)return;$(scanTarget).value=value;stopCamera();if(scanTarget==='location')$('barcode').focus();else $('name').focus();toast(scanTarget==='location'?'Plaukta adrese nolasīta':'Preces svītrkods nolasīts')}
- $('cameraBtn').addEventListener('click',async()=>{if(stream||zxingControls){await stopCamera();return}try{const video=$('camera');video.style.display='block';$('cameraBtn').textContent='✕ Apturēt';if('BarcodeDetector'in window){detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code','itf']});stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});video.srcObject=stream;await video.play();scanFrame()}else if(window.ZXingBrowser?.BrowserMultiFormatReader){zxingReader=new ZXingBrowser.BrowserMultiFormatReader();zxingControls=await zxingReader.decodeFromConstraints({video:{facingMode:{ideal:'environment'}}},video,(result)=>{if(result)onCodeRead(result.getText())})}else{await stopCamera();toast('Svītrkoda lasītājs nav ielādējies. Pārbaudi internetu un mēģini vēlreiz.')}}catch(err){await stopCamera();toast('Neizdevās ieslēgt kameru. Atļauj kameru un izmanto HTTPS adresi.')}});
+ $('cameraBtn').addEventListener('click',async()=>{
+  if(stream||zxingControls){await stopCamera();return}
+  const video=$('camera');
+  try{
+   if(!navigator.mediaDevices?.getUserMedia)throw new Error('NO_CAMERA_API');
+   video.style.display='block';$('cameraBtn').textContent='✕ Apturēt';
+   if(typeof window.BarcodeDetector==='function'){
+    detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code','itf']});
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+    video.srcObject=stream;await video.play();scanFrame();
+   }else if(window.ZXingBrowser?.BrowserMultiFormatReader){
+    zxingReader=new ZXingBrowser.BrowserMultiFormatReader();
+    zxingControls=await zxingReader.decodeFromConstraints({video:{facingMode:{ideal:'environment'}},audio:false},video,(result)=>{if(result)onCodeRead(result.getText())});
+   }else{throw new Error('NO_BARCODE_READER')}
+  }catch(err){await stopCamera();const msg=err.name==='NotAllowedError'?'Atļauj kameru Safari iestatījumos un mēģini vēlreiz.':err.name==='NotFoundError'?'Šai ierīcei kamera nav atrasta.':err.message==='NO_CAMERA_API'?'Atver saiti Safari, izmantojot HTTPS.':err.message==='NO_BARCODE_READER'?'Svītrkodu lasītājs neielādējās. Pārbaudi internetu.':'Kameru neizdevās ieslēgt. Pārbaudi Safari kameras atļauju.';toast(msg)}
+ });
  async function scanFrame(){if(!stream)return;try{const hits=await detector.detect($('camera'));if(hits.length)onCodeRead(hits[0].rawValue)}catch{}if(stream)requestAnimationFrame(scanFrame)}
  if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
  render();setTimeout(()=>$('barcode').focus(),250);
@@ -70,4 +85,5 @@
 </script>
 </body>
 </html>
+
 
