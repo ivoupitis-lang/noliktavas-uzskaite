@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Noliktavas uzskaite",
-  "short_name": "Noliktava",
-  "description": "Preču uzskaite un skenēšana pa noliktavas plauktiem.",
+  "name": "Atlases saraksts",
+  "short_name": "Atlase",
+  "description": "Atlases sarakstu nolasīšana un kārtošana pēc plauktu adresēm.",
   "lang": "lv",
   "start_url": "./index.html",
   "scope": "./",
@@ -16,5 +16,6 @@
     { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
   ]
 }
+
 
 

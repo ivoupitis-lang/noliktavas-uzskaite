@@ -1,16 +1,19 @@
-NOLIKTAVAS UZSKAITE — IPHONE WEB LIETOTNE
+ATLASES SARAKSTU KĀRTOTĀJS — iPhone tīmekļa lietotne
 
-Šī mape satur lietotni, ko var pievienot iPhone sākuma ekrānam.
+Lietotne ļauj pievienot vairāku atlases saraksta lapu fotoattēlus, nolasīt tabulas rindas un apvienot tās vienā sarakstā, kas sakārtots pēc Bins plaukta adreses.
 
-Lai to uzliktu iPhone:
-1. Ievieto VISU šīs mapes saturu tīmekļa vietnē ar HTTPS adresi.
-2. Atver lietotnes adresi iPhone Safari.
-3. Spied Kopīgot > Add to Home Screen.
-4. Ieslēdz “Open as Web App” un spied Add.
-5. Pirmoreiz lietojot kameras skeneri, atļauj Safari izmantot kameru.
+Lietošana:
+1. Atver lietotni iPhone Safari.
+2. Spied “Pievienot lapu foto” un pievieno visas pasūtījuma lapas.
+3. Spied “Nolasīt un sakārtot lapas”.
+4. Pārbaudi nolasītās ailes Bins, Artikuls, Nosaukums un Pas.; vajadzības gadījumā izlabo.
+5. Spied “Saglabāt CSV”, lai iegūtu sakārtotu failu.
 
-Svarīgi:
-- Kameras atļaujai vajadzīga HTTPS adrese.
-- Noliktavas dati tiek glabāti konkrētā telefona pārlūkā un netiek sinhronizēti ar datoru.
-- Svītrkoda skenerim vajadzīgs internets, lai ielādētu ZXing lasītāju. Preču datus tas nekur nenosūta.
-- Dublē datus ar pogu “Eksportēt CSV”.
+Lai tekstu atpazītu precīzāk, fotografē katru lapu taisni, labā apgaismojumā un ietver visu tabulu. OCR atpazīšana var kļūdīties, tāpēc pirms komplektēšanas pārbaudi sarakstu.
+
+Privātums un internets:
+- Fotoattēli tiek apstrādāti pārlūkā šajā ierīcē; lietotne tos nesūta uz serveri.
+- Pirmajā lietošanas reizē ir vajadzīgs internets, lai ielādētu OCR programmu un angļu valodas datus.
+- Sakārtotais saraksts saglabājas šajā ierīcē un šajā pārlūkā.
+
+Pievienošana iPhone sākuma ekrānam: Safari > Kopīgot > Add to Home Screen > Add.
